@@ -101,8 +101,9 @@
         <h2>Employees List</h2>
         <form action={{ URL('employee') }} method="GET">
             <div class="search">
-                <input type="text" placeholder="Search" id="search" name="search">
+                <input type="text" placeholder="Search" id="search" name="search" value="{{ request('search') }}">
                 <button type="submit">Search</button>
+                <a class="addStudentButton" href="{{ URL('employee/add') }}">Add Employee</a>
             </div>
         </form>
         
@@ -112,7 +113,7 @@
                     <th>Employee ID</th>
                     <th>Full Name</th>
                     <th>Department</th>
-                    <th>Job Title</th>
+                    <th>Role </th>
                     <th>Location</th>
                     <th>Actions</th>
                 </tr>
@@ -128,8 +129,13 @@
                         <td>{{$employee->role}}</td>
                         <td>{{$employee->location}}</td>
                         <td>
-                            <a href="#" class="editButton">Edit</a>
-                            <a href="#" class="deleteButton">Delete</a>
+                            <a href="{{ URL('employee/edit', $employee->id) }}" class="editButton">Edit</a>
+                            <form action="{{ URL('employee/delete', $employee->id) }}" method="POST" style="display:inline;"
+                                onsubmit="return confirm('Are you sure you want to delete this employee?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>                        
                         </td>
                     </tr>
 
@@ -138,6 +144,8 @@
             </tbody>
             
         </table>
-        
+        <div class="paginationDiv">
+            {{ $employees->appends(request()->query())->links('pagination::bootstrap-5') }}
+        </div>
     </section>
 @endsection

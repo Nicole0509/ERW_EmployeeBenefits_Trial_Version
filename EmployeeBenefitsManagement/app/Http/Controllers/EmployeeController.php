@@ -18,8 +18,46 @@ class EmployeeController extends Controller
                     'role',
                     'location' 
                 ], 'like','%'. $request->search . '%');
-        })->paginate(20);
+        })->paginate(10);
 
         return view('employees.index',compact('employees'));
+    }
+
+    public function create(Request $request){
+        $employee = new Employee();
+
+        $employee->employeeID = $request->employeeID;
+        $employee->name = $request->name;
+        $employee->department = $request->department;
+        $employee->role = $request->role;
+        $employee->location = $request->location;
+        $employee->save();
+
+        return redirect('employee');
+    }
+
+    public function edit($id){
+        $employee = Employee::findOrFail($id);
+
+        return view('employees.edit', compact('employee'));
+    }
+
+    public function update(Request $request, $id){
+        $employee = Employee::findOrFail($id);
+
+        $employee->employeeID = $request->employeeID;
+        $employee->name = $request->name;
+        $employee->department = $request->department;
+        $employee->role = $request->role;
+        $employee->location = $request->location;
+        $employee->update();
+
+        return redirect('employee');
+    }
+
+    public function destroy(Request $request,$id){
+        $employee = Employee::findOrFail($id)->delete();
+        
+        return redirect('employee');
     }
 }
